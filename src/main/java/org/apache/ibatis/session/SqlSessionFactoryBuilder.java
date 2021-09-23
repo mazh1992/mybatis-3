@@ -27,7 +27,6 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 
 /**
  * Builds {@link SqlSession} instances.
- *
  * @author Clinton Begin
  */
 public class SqlSessionFactoryBuilder {
@@ -60,6 +59,11 @@ public class SqlSessionFactoryBuilder {
     }
   }
 
+  /**
+   * 读取配置文件解析
+   * @param inputStream
+   * @return
+   */
   public SqlSessionFactory build(InputStream inputStream) {
     return build(inputStream, null, null);
   }
@@ -88,6 +92,11 @@ public class SqlSessionFactoryBuilder {
     }
   }
 
+  /**
+   * 通过Configuration 创建SqlSessionFactory
+   * @param config
+   * @return
+   */
   public SqlSessionFactory build(Configuration config) {
     return new DefaultSqlSessionFactory(config);
   }

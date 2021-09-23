@@ -423,15 +423,19 @@ public class XMLMapperBuilder extends BaseBuilder {
         boundType = Resources.classForName(namespace);
       } catch (ClassNotFoundException e) {
         // ignore, bound type is not required
+        // 随便写一个，不存在的class。异常被忽略了，而且加载不进去，
       }
+
+      // 判断是否重复加载
       if (boundType != null && !configuration.hasMapper(boundType)) {
         // Spring may not know the real resource name so we set a flag
         // to prevent loading again this resource from the mapper interface
         // look at MapperAnnotationBuilder#loadXmlResource
-        configuration.addLoadedResource("namespace:" + namespace);
-        configuration.addMapper(boundType);
+        configuration.addLoadedResource("namespace:" + namespace); // 为spring 预留持有资源路径，（已经加载过的资源）
+        configuration.addMapper(boundType);// 添加mapper
       }
     }
   }
 
 }
+

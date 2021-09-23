@@ -50,7 +50,9 @@ public class MapperMethod {
   private final MethodSignature method;
 
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
+    // 解析SQL命令，主要是，通过接口，方法，从XML解析出来的SQL statement中查找到对应的
     this.command = new SqlCommand(config, mapperInterface, method);
+    // 解析方法信息
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
@@ -251,16 +253,22 @@ public class MapperMethod {
       return type;
     }
 
+    // 解析Mapper的Statement，就是那个XML的一个<select></select>标签对
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
       String statementId = mapperInterface.getName() + "." + methodName;
       if (configuration.hasStatement(statementId)) {
+        //从加载中获取
         return configuration.getMappedStatement(statementId);
-      } else if (mapperInterface.equals(declaringClass)) {
+      } else if (mapperInterface.equals(declaringClass)) {// 当前方法的类，就是这个mapper，响应空
         return null;
       }
+
+      // 循环所有的mapper接口 判断当前类是不是有子类
       for (Class<?> superInterface : mapperInterface.getInterfaces()) {
+        // 类集成角度，判断，当前类，是否有父类，有就从父类里面找
         if (declaringClass.isAssignableFrom(superInterface)) {
+          // 父类没有，拿子类的接口去找
           MappedStatement ms = resolveMappedStatement(superInterface, methodName,
               declaringClass, configuration);
           if (ms != null) {

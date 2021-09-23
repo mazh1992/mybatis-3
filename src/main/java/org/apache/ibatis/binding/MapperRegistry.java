@@ -43,10 +43,11 @@ public class MapperRegistry {
   @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
-    if (mapperProxyFactory == null) {
+    if (mapperProxyFactory == null) { // 没有说明没有加载进来
       throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
     }
     try {
+      // 响应一个接口的代理类
       return mapperProxyFactory.newInstance(sqlSession);
     } catch (Exception e) {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);
@@ -57,13 +58,15 @@ public class MapperRegistry {
     return knownMappers.containsKey(type);
   }
 
+  // 添加Mapper
   public <T> void addMapper(Class<T> type) {
-    if (type.isInterface()) {
-      if (hasMapper(type)) {
+    if (type.isInterface()) { // 只有接口才可以
+      if (hasMapper(type)) { // 已经添加过了抛出异常
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
       }
       boolean loadCompleted = false;
       try {
+        // 添加进去，key接口，value就是，mapper代理工厂实例，此时将接口传进去了
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
@@ -91,7 +94,7 @@ public class MapperRegistry {
 
   /**
    * Adds the mappers.
-   *
+   * 扫描所有的mapper。创建Mapper代理工厂
    * @param packageName
    *          the package name
    * @param superType

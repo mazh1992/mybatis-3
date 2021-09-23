@@ -47,6 +47,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
   }
 
+  /**
+   * 创建一个SqlSeesion
+   * @param autoCommit 是不是要自动提交
+   * @return
+   */
   @Override
   public SqlSession openSession(boolean autoCommit) {
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, autoCommit);
@@ -92,11 +97,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     try {
       final Environment environment = configuration.getEnvironment();
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-      tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-      final Executor executor = configuration.newExecutor(tx, execType);
+      tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit); // 开启一个事物
+      final Executor executor = configuration.newExecutor(tx, execType); // 创建一个 executor 执行器
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
-      closeTransaction(tx); // may have fetched a connection so lets call close()
+      closeTransaction(tx); // may have fetched a connection so lets call close() 异常了关掉
       throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
     } finally {
       ErrorContext.instance().reset();

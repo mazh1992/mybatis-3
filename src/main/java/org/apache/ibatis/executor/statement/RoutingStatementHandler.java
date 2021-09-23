@@ -36,6 +36,16 @@ public class RoutingStatementHandler implements StatementHandler {
 
   private final StatementHandler delegate;
 
+  /**
+   * 根据 StatementType 选择各自的处理，StatementType 是再解析XML时，就已经确定了的
+   * @see org.apache.ibatis.builder.xml.XMLStatementBuilder#parseStatementNode() Line 97
+   * @param executor
+   * @param ms
+   * @param parameter
+   * @param rowBounds
+   * @param resultHandler
+   * @param boundSql
+   */
   public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
     switch (ms.getStatementType()) {
