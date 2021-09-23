@@ -182,13 +182,17 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  // 插件
   private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        // 获取interceptor节点值
         String interceptor = child.getStringAttribute("interceptor");
         Properties properties = child.getChildrenAsProperties();
+        // 通过反射实例化
         Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).getDeclaredConstructor().newInstance();
         interceptorInstance.setProperties(properties);
+        // 添加拦截器
         configuration.addInterceptor(interceptorInstance);
       }
     }

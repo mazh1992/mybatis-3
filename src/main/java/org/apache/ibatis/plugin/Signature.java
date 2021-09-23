@@ -34,17 +34,19 @@ public @interface Signature {
    * Returns the java type.
    *
    * @return the java type
+   * 被代理的类
    */
   Class<?> type();
 
   /**
    * Returns the method name.
-   *
+   * 类中的方法
    * @return the method name
    */
   String method();
 
   /**
+   * 方法中的参数参数
    * Returns java types for method argument.
    * @return java types for method argument
    */

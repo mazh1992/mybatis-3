@@ -21,11 +21,14 @@ import java.util.List;
 
 /**
  * @author Clinton Begin
+ *
+ * 拦截器责任链
  */
 public class InterceptorChain {
 
   private final List<Interceptor> interceptors = new ArrayList<>();
 
+  // 传进来一个对象，然后循环拦截器，层层包装代理，像洋葱一样，把目标对象，包裹在最中间，外面一层层的拦截器
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
       target = interceptor.plugin(target);
@@ -33,6 +36,7 @@ public class InterceptorChain {
     return target;
   }
 
+  // 添加一个拦截器
   public void addInterceptor(Interceptor interceptor) {
     interceptors.add(interceptor);
   }

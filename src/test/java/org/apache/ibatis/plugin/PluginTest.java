@@ -17,6 +17,7 @@ package org.apache.ibatis.plugin;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +28,8 @@ class PluginTest {
   @Test
   void mapPluginShouldInterceptGet() {
     Map map = new HashMap();
-    map = (Map) new AlwaysMapPlugin().plugin(map);
-    assertEquals("Always", map.get("Anything"));
+    map = (Map) new AlwaysMapPlugin().plugin(map); // 生成代理
+    assertEquals("Always", map.get("Anything")); // get时去拦截器中执行
   }
 
   @Test
@@ -42,9 +43,11 @@ class PluginTest {
       @Signature(type = Map.class, method = "get", args = {Object.class})})
   public static class AlwaysMapPlugin implements Interceptor {
     @Override
-    public Object intercept(Invocation invocation) {
-      return "Always";
+    public Object intercept(Invocation invocation) throws InvocationTargetException, IllegalAccessException {
+      System.out.println("Always"); // 自己可以加点处理内容
+      return invocation.proceed(); // 继续执行target 被代理对象
     }
+
 
   }
 
